@@ -1,107 +1,39 @@
-// Type Aliases
+type One = string;
+type Two = string | number;
+type Three = "hello";
 
-type stringOrNumber = string | number;
+// Convert to more or less specific
 
-type stringOrNumberArray = (string | number)[];
+let a: One = "hello";
+let b = a as Two; // less specific
+let c = a as Three; // more specific
 
-type Guitarist = {
-    name?: string;
-    active: boolean;
-    albums: stringOrNumberArray;
-};
+let d = <One>"world";
+let e = <string | number>"worlds";
 
-type UserId = stringOrNumber;
-
-// Literal Types
-
-let myName: "Artem";
-let userName: "Artem" | "John" | "Amy";
-
-userName = "Amy";
-
-// Functions
-
-const add = (a: number, b: number): number => {
-    return a + b;
-};
-
-const logMsg = (message: any): void => {
-    console.log(message);
-};
-
-console.log("Hello!");
-console.log(add(2, 3));
-
-let subtract = (a: number, b: number): number => {
-    return a - b;
-};
-
-type MathFunction = (a: number, b: number) => number;
-
-// interface MathFunction {
-//     (a: number, b: number): number;
-// }
-
-let multiply: MathFunction = (a, b) => {
-    return a * b;
-};
-
-logMsg(multiply(2, 2));
-
-// Optional Parameters
-
-const addAll = (a: number, b: number, c?: number): number => {
-    if (typeof c !== "undefined") {
-        return a + b + c;
+const addOrConcat = (
+    a: number,
+    b: number,
+    c: "add" | "concat"
+): number | string => {
+    if (c === "add") {
+        return a + b;
     }
-    return a + b;
+    return "" + a + b;
 };
 
-// Default Param Value
+let myVal: string = addOrConcat(2, 2, "concat") as string;
 
-const sumAll = (a: number = 10, b: number, c: number = 2): number => {
-    return a + b + c;
-};
+// Be careful! TS sees no problem - but a string is returned
+let nextVal: number = addOrConcat(2, 2, "concat") as number;
 
-logMsg(addAll(2, 3, 2));
-logMsg(addAll(2, 3));
-logMsg(sumAll(2, 3));
-logMsg(sumAll(undefined, 3));
+// 10 as string;
+10 as unknown as string;
 
-// Rest Parameters
+// The DOM
+const img = document.querySelector("img")!;
+const myImg = document.getElementById("img") as HTMLImageElement;
+const nextImg = <HTMLImageElement>document.getElementById("img");
 
-const total = (a: number, ...nums: number[]): number => {
-    return a + nums.reduce((prev, curr) => prev + curr);
-};
-
-logMsg(total(10, 2, 3));
-
-// Never Type
-
-const createError = (errMsg: string): never => {
-    throw new Error(errMsg);
-};
-
-const infinite = () => {
-    let i: number = 1;
-    while (true) {
-        i++;
-        if (i > 100) {
-            break;
-        }
-    }
-};
-
-// Custom Type Guard
-
-const isNumber = (value: any): boolean => {
-    return typeof value === "number" ? true : false;
-};
-
-// Use of the Never Type
-
-const numberOfString = (value: number | string): string => {
-    if (typeof value === "string") return "string";
-    if (isNumber(value)) return "number";
-    return createError("This should never happen");
-};
+img.src;
+myImg.src;
