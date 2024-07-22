@@ -1,52 +1,70 @@
 "use strict";
-let stringArray = ["one", "hey", "Artem"];
-let guitars = ["Strat", "Les Paul", 5150];
-let mixedData = ["EVH", 1984, true];
-stringArray[0] = "John";
-stringArray.push("hey");
-guitars[0] = 42;
-guitars.unshift("Jim");
-let test = [];
-let bands = [];
-bands.push("Van Halen");
-// Tuple
-let myTuple = ["Artem", 42, true];
-let mixed = ["John", 1, false];
-myTuple[1] = 42;
-// Objects
-let myObject;
-myObject = [];
-console.log(typeof myObject);
-myObject = bands;
-myObject = {};
-const exampleObject = {
-    prop1: "Artem",
-    prop2: true,
+// Type Aliases
+// Literal Types
+let myName;
+let userName;
+userName = "Amy";
+// Functions
+const add = (a, b) => {
+    return a + b;
 };
-exampleObject.prop1 = "John";
-let evh = {
-    name: "Eddie",
-    active: false,
-    albums: [1984, 5150, "OU812"],
+const logMsg = (message) => {
+    console.log(message);
 };
-let jp = {
-    active: true,
-    albums: ["I", "II", "IV"],
+console.log("Hello!");
+console.log(add(2, 3));
+let subtract = (a, b) => {
+    return a - b;
 };
-const greetGuitarist = (guitarist) => {
-    if (guitarist.name) {
-        return `Hello ${guitarist.name.toUpperCase()}!`;
+// interface MathFunction {
+//     (a: number, b: number): number;
+// }
+let multiply = (a, b) => {
+    return a * b;
+};
+logMsg(multiply(2, 2));
+// Optional Parameters
+const addAll = (a, b, c) => {
+    if (typeof c !== "undefined") {
+        return a + b + c;
     }
-    return `Hello!`;
+    return a + b;
 };
-console.log(greetGuitarist(jp));
-// Enums
-var Grade;
-(function (Grade) {
-    Grade[Grade["U"] = 1] = "U";
-    Grade[Grade["D"] = 2] = "D";
-    Grade[Grade["C"] = 3] = "C";
-    Grade[Grade["B"] = 4] = "B";
-    Grade[Grade["A"] = 5] = "A";
-})(Grade || (Grade = {}));
-console.log(Grade.U);
+// Default Param Value
+const sumAll = (a = 10, b, c = 2) => {
+    return a + b + c;
+};
+logMsg(addAll(2, 3, 2));
+logMsg(addAll(2, 3));
+logMsg(sumAll(2, 3));
+logMsg(sumAll(undefined, 3));
+// Rest Parameters
+const total = (a, ...nums) => {
+    return a + nums.reduce((prev, curr) => prev + curr);
+};
+logMsg(total(10, 2, 3));
+// Never Type
+const createError = (errMsg) => {
+    throw new Error(errMsg);
+};
+const infinite = () => {
+    let i = 1;
+    while (true) {
+        i++;
+        if (i > 100) {
+            break;
+        }
+    }
+};
+// Custom Type Guard
+const isNumber = (value) => {
+    return typeof value === "number" ? true : false;
+};
+// Use of the Never Type
+const numberOfString = (value) => {
+    if (typeof value === "string")
+        return "string";
+    if (isNumber(value))
+        return "number";
+    return createError("This should never happen");
+};
