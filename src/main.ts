@@ -1,85 +1,142 @@
-// Index Signatures
+const echo = <T>(arg: T): T => arg;
 
-// interface TransactionObj {
-//     readonly [index: string]: number;
-// }
-
-interface TransactionObj {
-    readonly [index: string]: number;
-    pizza: number;
-    books: number;
-    job: number;
-}
-
-const todaysTransactions: TransactionObj = {
-    pizza: -10,
-    books: -5,
-    job: 50,
+const isObj = <T>(arg: T): boolean => {
+    return typeof arg === "object" && !Array.isArray(arg) && arg !== null;
 };
 
-console.log(todaysTransactions.pizza);
-console.log(todaysTransactions["pizza"]);
+console.log(isObj(true));
+console.log(isObj("John"));
+console.log(isObj([1, 2, 3]));
+console.log(isObj({ name: "John" }));
+console.log(isObj(null));
 
-let prop: string = "pizza";
-console.log(todaysTransactions[prop]);
+interface BoolCheck<T> {
+    value: T;
+    is: boolean;
+}
 
-const todaysNet = (transactions: TransactionObj): number => {
-    let total = 0;
-    for (const transaction in transactions) {
-        total += transactions[transaction];
+const isTrue = <T>(arg: T): BoolCheck<T> => {
+    if (Array.isArray(arg) && !arg.length) {
+        return { value: arg, is: false };
     }
-    return total;
+
+    if (isObj(arg) && !Object.keys(arg as keyof T).length) {
+        return { value: arg, is: false };
+    }
+
+    return { value: arg, is: !!arg };
 };
 
-console.log(todaysNet(todaysTransactions));
+console.log(isTrue(false));
+console.log(isTrue(0));
+console.log(isTrue(true));
+console.log(isTrue(1));
+console.log(isTrue("Artem"));
+console.log(isTrue(""));
+console.log(isTrue(null));
+console.log(isTrue(undefined));
+console.log(isTrue({}));
+console.log(isTrue({ name: "Artem" }));
+console.log(isTrue([]));
+console.log(isTrue([1, 2, 3]));
+console.log(isTrue(NaN));
+console.log(isTrue(-0));
 
-// todaysTransactions.pizza = 40;
-
-console.log(todaysTransactions["dave"]);
-
-interface Student {
-    // [key: string]: string | number | number[] | undefined;
-    name: string;
-    gpa: number;
-    classes?: number[];
+interface HasID {
+    id: number;
 }
 
-const student: Student = {
-    name: "Doug",
-    gpa: 3.5,
-    classes: [100, 200],
+const processUser = <T extends HasID>(user: T): T => {
+    return user;
 };
 
-// console.log(student.test);
+console.log(processUser({ id: 1, name: "Artem" }));
+// console.log(processUser({ name: "Artem" }));
 
-for (const key in student) {
-    console.log(`${key}: ${student[key as keyof Student]}`);
+const getUsersProperty = <T extends HasID, K extends keyof T>(
+    users: T[],
+    key: K
+): T[K][] => {
+    return users.map((user) => user[key]);
+};
+
+const usersArray = [
+    {
+        id: 1,
+        name: "Leanne Graham",
+        username: "Bret",
+        email: "Sincere@april.biz",
+        address: {
+            street: "Kulas Light",
+            suite: "Apt. 556",
+            city: "Gwenborough",
+            zipcode: "92998-3874",
+            geo: {
+                lat: "-37.3159",
+                lng: "81.1496",
+            },
+        },
+        phone: "1-770-736-8031 x56442",
+        website: "hildegard.org",
+        company: {
+            name: "Romaguera-Crona",
+            catchPhrase: "Multi-layered client-server neural-net",
+            bs: "harness real-time e-markets",
+        },
+    },
+    {
+        id: 2,
+        name: "Ervin Howell",
+        username: "Antonette",
+        email: "Shanna@melissa.tv",
+        address: {
+            street: "Victor Plains",
+            suite: "Suite 879",
+            city: "Wisokyburgh",
+            zipcode: "90566-7771",
+            geo: {
+                lat: "-43.9509",
+                lng: "-34.4618",
+            },
+        },
+        phone: "010-692-6593 x09125",
+        website: "anastasia.net",
+        company: {
+            name: "Deckow-Crist",
+            catchPhrase: "Proactive didactic contingency",
+            bs: "synergize scalable supply-chains",
+        },
+    },
+];
+
+console.log(getUsersProperty(usersArray, "id"));
+console.log(getUsersProperty(usersArray, "username"));
+console.log(getUsersProperty(usersArray, "company"));
+// console.log(getUsersProperty(usersArray, "aaa"));
+
+class StateObject<T> {
+    private data: T;
+
+    constructor(value: T) {
+        this.data = value;
+    }
+
+    get state() {
+        return this.data;
+    }
+
+    set state(value: T) {
+        this.data = value;
+    }
 }
 
-Object.keys(student).map((key) => {
-    console.log(student[key as keyof typeof student]);
-});
+const store = new StateObject("John");
+console.log(store.state);
+store.state = "Artem";
+console.log(store.state);
+// store.state = 12;
 
-const logStudentKey = (student: Student, key: keyof Student): void => {
-    console.log(`Student ${key}: ${student[key]}`);
-};
-
-logStudentKey(student, "gpa");
-
-// interface Incomes {
-//     [key: string]: number;
-// }
-
-type Streams = "salary" | "bonus" | "sidehustle";
-
-type Incomes = Record<Streams, number>;
-
-const monthlyIncomes: Incomes = {
-    salary: 500,
-    bonus: 100,
-    sidehustle: 250,
-};
-
-for (const revenue in monthlyIncomes) {
-    console.log(monthlyIncomes[revenue as keyof Incomes]);
-}
+const myState = new StateObject<(string | number | boolean)[]>([15]);
+console.log(myState.state);
+myState.state = ["Artem", 42, true];
+console.log(myState.state);
